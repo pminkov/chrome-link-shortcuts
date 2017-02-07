@@ -1,0 +1,40 @@
+{
+  "manifest_version": 2,
+  "name": "Url shortcuts",
+  "description": "Shortcuts for urls",
+  "version": "1.0",
+
+  "browser_action": {
+    "default_icon": "icon.png"
+  },
+
+  "background" : {
+    "scripts": ["background.js"],
+    "persistent": false
+  },
+
+  "content_scripts": [
+    {
+      "matches": [ "<all_urls>" ],
+      "css": [ "content.css" ],
+      "js": ["content.js"]
+      // TODO(petko): Add run_at?
+    }
+  ],
+
+  "commands": {
+    "go": {
+      "suggested_key": {
+        "mac": "Ctrl+K"
+      },
+      "description": "Go to a page"
+    }
+  },
+  
+  "web_accessible_resources" : ["popup.html"],
+
+  "permissions": [
+    "tabs",
+    "storage"
+  ]
+}

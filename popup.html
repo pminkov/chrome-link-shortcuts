@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <!-- Bootstrap core CSS -->
+    <!--<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet"> -->
+
+    <!-- Custom styles for this template -->
+    <link href="typeahead.css" rel="stylesheet">
+    <link href="ext/pure-min.css" rel="stylesheet">
+    <link href="popup.css" rel="stylesheet">
+    <link href="search-box.css" rel="stylesheet">
+  </head>
+
+  <body>
+    <div class="overlay"></div>
+
+    <div id="settings-menu">
+      <form id="add-link-holder" class="pure-form pure-form-aligned">
+        <fieldset>
+          <div class="pure-control-group">
+            <label for="link-name">Shortcut name</label>
+            <input id="link-name"
+                   type="text" placeholder="google">
+          </div>
+          <div class="pure-control-group">
+            <label for="link-url">URL</label>
+            <input id="link-url"
+                   type="text" placeholder="https://www.google.com">
+          </div>
+          <div class="pure-controls">
+            <button id="add-shortcut" 
+                class="pure-button pure-button-primary">Add Shortcut</button>
+          </div>
+        </fieldset>
+      </form>
+
+      <table class="pure-table pure-table-horizontal" id="saved-shortcuts">
+        <thead>
+          <tr>
+            <th>Shortcut</th>
+            <th>URL</th>
+            <th>Delete</th>
+          </tr>
+        </thead>
+        <tbody id="saved-shortcuts-body">
+          <!-- Templates -->
+          <tr id="saved-shortcut-template">
+            <td class="shortcut-name"></td>
+            <td class="shortcut-url"></td>
+            <td class="shortcut-delete">
+              <button class="red-button pure-button pure-button-primary">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+
+    </div>
+
+    <div id="search-box">
+      <div id="the-basics">
+        <input id="typeahead" class="typeahead" type="text" placeholder="Type shortcut">
+      </div>
+      <div class="settings">
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+      </div>
+    </div>
+
+    <!-- Bootstrap core JavaScript -->
+    <script src="ext/handlebars-v4.0.5.js"></script>
+    <script src="ext/jquery.min.js"></script>
+    <script src="ext/typeahead.bundle.js"></script>
+    <script src="popup.js"></script>
+  </body>
+</html>
+
