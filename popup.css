@@ -67,3 +67,9 @@
 #add-link-holder input {
   width:70%;
 }
+
+#close-menu {
+  position: absolute;
+  top:9px;
+  right:9px;
+}

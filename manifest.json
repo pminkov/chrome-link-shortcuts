@@ -25,7 +25,8 @@
   "commands": {
     "go": {
       "suggested_key": {
-        "mac": "Ctrl+K"
+        "default": "Ctrl+K",
+        "mac": "MacCtrl+K"
       },
       "description": "Go to a page"
     }
@@ -38,3 +39,4 @@
     "storage"
   ]
 }
+

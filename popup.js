@@ -64,6 +64,11 @@ function openSettings(event) {
         });
       }
     });
+
+    $('#close-menu').click(function(ev) {
+      ev.preventDefault();
+      closeSettingsUI();
+    });
   }
 }
 
@@ -85,14 +90,17 @@ $(document).ready(function() {
   });
 });
 
+function closeSettingsUI() {
+  in_settings = false;
+  $('#settings-menu').hide();
+  $('#search-box').show();
+  $('.typeahead').focus();
+}
+
 $(document).keyup(function(e) {
   if (e.which == 27) {
     if (in_settings) {
-      // TODO(petko): Add a close button as well.
-      in_settings = false;
-      $('#settings-menu').hide();
-      $('#search-box').show();
-      $('.typeahead').focus();
+      closeSettingsUI();
     } else {
       chrome.runtime.sendMessage('hide_popup');
     }
