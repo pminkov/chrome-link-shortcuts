@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "Link Shortcuts",
   "description": "Access common urls by typing a shortcut name",
-  "version": "1.0.2",
+  "version": "1.0.3",
 
   "browser_action": {
     "default_icon": "icon.png",
