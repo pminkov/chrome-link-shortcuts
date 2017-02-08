@@ -38,7 +38,7 @@ function showSavedShortcut(shortcut, url) {
   var instance = $(templ).clone();
   $(instance).attr('id', 'saved-' + shortcut);
   $(instance).find('.shortcut-name').text(shortcut);
-  $(instance).find('.shortcut-url').text(url);
+  $(instance).find('.shortcut-url').text(trim_to_len(url, 150));
   $(instance).show();
   $(instance).find('button').click(function() {
     chrome.storage.sync.remove(shortcut);
@@ -159,12 +159,16 @@ var substringMatcher = function() {
   };
 };
 
-function trim(url) {
-  if (url.length > 80) {
-    return url.substr(0, 80) + '...'
+function trim_to_len(url, len) {
+  if (url.length > len) {
+    return url.substr(0, len) + '...'
   } else {
     return url
   }
+}
+
+function trim(url) {
+  return trim_to_len(url, 80);
 }
 
 function render_result(result) {
