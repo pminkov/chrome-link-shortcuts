@@ -1,20 +1,39 @@
 var overlay = document.querySelector('.overlay');
 
+/* holds a list of {shortcut, url} objects */
 var dataset = [];
 
 var in_settings = false;
 var settings_first_open = true;
 
+function addToDataset(shortcut, url) {
+  var new_entry = {
+    shortcut: shortcut,
+    url: url
+  };
+  
+  var found = false;
+  for (var i = 0; i < dataset.length; i++) {
+    if (dataset[i].shortcut == new_entry.shortcut) {
+      dataset[i] = new_entry;
+      found = true;
+    }
+  }
+  if (!found) {
+    dataset.push(new_entry);
+  }
+}
+
 function removeFromDataset(shortcut) {
   for (var i = 0; i < dataset.length; i++) {
-    if (dataset[i].key == shortcut) {
+    if (dataset[i].shortcut == shortcut) {
       dataset.splice(i, 1);
       console.log('Spliced');
     }
   }
 }
 
-function addSavedShortcut(shortcut, url) {
+function showSavedShortcut(shortcut, url) {
   var templ = $('#saved-shortcut-template');
   var instance = $(templ).clone();
   $(instance).attr('id', 'saved-' + shortcut);
@@ -42,25 +61,31 @@ function openSettings(event) {
       for (key in stored) {
         console.log(key, ' -> ', stored[key]);
 
-        addSavedShortcut(key, stored[key]);
+        showSavedShortcut(key, stored[key]);
       }
     });
 
     $('#add-shortcut').click(function(ev) {
       ev.preventDefault();
-      var name = $('#link-name').val();
+      var shortcut = $('#link-name').val();
       var url = $('#link-url').val();
 
-      if (name && name.length > 0) {
+      if (shortcut && shortcut.length > 0) {
         chrome.storage.sync.set({'petko': 'minkov'});
         var to_store = {}
-        to_store[name] = url;
+        to_store[shortcut] = url;
         chrome.storage.sync.set(to_store, function(args) {
-          console.log('Saved: ', name, ' ', url);
+          console.log('Saved: ', shortcut, ' ', url);
           console.log(arguments);
           console.log(args);
 
-          addSavedShortcut(name, url);
+          dataset.push({
+            key: shortcut,
+            value: url
+          });
+
+          showSavedShortcut(shortcut, url);
+          addToDataset(shortcut, url);
         });
       }
     });
@@ -81,8 +106,8 @@ $(document).ready(function() {
     if (false == $.isEmptyObject(shortcuts)) {
       for (var key in shortcuts) {
         dataset.push({
-          key: key,
-          value: shortcuts[key]
+          shortcut: key,
+          url: shortcuts[key]
         });
       }
       console.log(dataset);
@@ -125,7 +150,7 @@ var substringMatcher = function() {
     // iterate through the pool of strings and for any string that
     // contains the substring `q`, add it to the `matches` array
     $.each(dataset, function(i, entry) {
-      if (substrRegex.test(entry.key)) {
+      if (substrRegex.test(entry.shortcut)) {
         matches.push(entry);
       }
     });
@@ -135,11 +160,11 @@ var substringMatcher = function() {
 };
 
 function render_result(result) {
-  return '<div>'+ result.key + '<div class="res_url">' + result.value + '</div></div>';
+  return '<div>'+ result.shortcut + '<div class="res_url">' + result.url + '</div></div>';
 };
 
 function display(result) {
-  return result.key;
+  return result.shortcut;
 }
 
 var box = $('#search-box .typeahead');
@@ -158,7 +183,7 @@ box.typeahead({
 });
 
 box.bind('typeahead:select', function(ev, shortcut) {
-  var redirect_url = shortcut.value;
+  var redirect_url = shortcut.url;
   console.log('Redirecting to ', redirect_url);
   if (!redirect_url.startsWith('http')) {
     redirect_url = 'http://' + redirect_url;

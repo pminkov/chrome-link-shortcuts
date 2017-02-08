@@ -1,7 +1,5 @@
 console.log('background.js here');
 
-chrome.browserAction.setBadgeText({text: '6'});
-
 chrome.commands.onCommand.addListener(function (command) {
   console.log('Command:', command);
   if (command === "go") {
