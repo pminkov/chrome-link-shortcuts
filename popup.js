@@ -159,8 +159,16 @@ var substringMatcher = function() {
   };
 };
 
+function trim(url) {
+  if (url.length > 80) {
+    return url.substr(0, 80) + '...'
+  } else {
+    return url
+  }
+}
+
 function render_result(result) {
-  return '<div>'+ result.shortcut + '<div class="res_url">' + result.url + '</div></div>';
+  return '<div>'+ result.shortcut + '<div class="res_url">' + trim(result.url) + '</div></div>';
 };
 
 function display(result) {
