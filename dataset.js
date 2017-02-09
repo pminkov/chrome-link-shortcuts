@@ -39,7 +39,7 @@ Dataset.prototype.getMatches = function(text) {
 Dataset.prototype.urlForShortcut = function(shortcut) {
   for (var i = 0; i < this.links.length; i++)
     if (this.links[i].shortcut == shortcut)
-      return links[i].url;
+      return this.links[i].url;
 };
 
 Dataset.prototype.addToDataset = function(shortcut, url) {
