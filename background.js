@@ -1,7 +1,5 @@
 console.log('background.js here');
 
-
-
 var dataset = new Dataset();
 
 chrome.runtime.onMessage.addListener(function(message) {
