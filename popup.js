@@ -1,40 +1,9 @@
 var overlay = document.querySelector('.overlay');
 
 /* holds a list of {shortcut, url} objects */
-var dataset = [];
+var dataset = new Dataset();
 
 var settings_first_open = true;
-
-function addToDataset(shortcut, url) {
-  var new_entry = {
-    shortcut: shortcut,
-    url: url
-  };
-  
-  var found = false;
-  for (var i = 0; i < dataset.length; i++) {
-    if (dataset[i].shortcut == new_entry.shortcut) {
-      dataset[i] = new_entry;
-      found = true;
-    }
-  }
-  if (!found) {
-    dataset.push(new_entry);
-  }
-
-  chrome.runtime.sendMessage('refresh_dataset');
-}
-
-function removeFromDataset(shortcut) {
-  for (var i = 0; i < dataset.length; i++) {
-    if (dataset[i].shortcut == shortcut) {
-      dataset.splice(i, 1);
-      console.log('Spliced');
-    }
-  }
-
-  chrome.runtime.sendMessage('refresh_dataset');
-}
 
 function showSavedShortcut(shortcut, url) {
   var templ = $('#saved-shortcut-template');
@@ -46,7 +15,7 @@ function showSavedShortcut(shortcut, url) {
   $(instance).find('button').click(function() {
     chrome.storage.sync.remove(shortcut);
     $(this).closest('tr').remove();
-    removeFromDataset(shortcut);
+    dataset.removeFromDataset(shortcut);
   });
   $('#saved-shortcuts-body').prepend(instance);
 }
@@ -80,13 +49,8 @@ function openSettings() {
           console.log(arguments);
           console.log(args);
 
-          dataset.push({
-            key: shortcut,
-            value: url
-          });
-
           showSavedShortcut(shortcut, url);
-          addToDataset(shortcut, url);
+          dataset.addToDataset(shortcut, url);
         });
       }
     });
@@ -100,16 +64,7 @@ function openSettings() {
 
 $(document).ready(function() {
   console.log('Document ready!');
-  chrome.storage.sync.get(function(shortcuts) {
-    if (false == $.isEmptyObject(shortcuts)) {
-      for (var key in shortcuts) {
-        dataset.push({
-          shortcut: key,
-          url: shortcuts[key]
-        });
-      }
-      console.log(dataset);
-    }
+  dataset.load(function() {
     openSettings();
   });
 });

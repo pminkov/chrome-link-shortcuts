@@ -1,5 +1,7 @@
 console.log('hi there - content3');
 
+
+
 var iframe = document.createElement('iframe');
 iframe.className = 'css-isolation-popup';
 iframe.frameBorder = 0;
@@ -19,5 +21,6 @@ chrome.runtime.onMessage.addListener(function(message) {
     // Reload the frame for a fresh start.
     iframe.src = chrome.extension.getURL("popup.html");
     iframe.style.display = 'inline';
+
   }
 });

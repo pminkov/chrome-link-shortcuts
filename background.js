@@ -1,6 +1,8 @@
 console.log('background.js here');
 
-var dataset = [];
+
+
+var dataset = new Dataset();
 
 chrome.runtime.onMessage.addListener(function(message) {
   if (message == 'hide_app') {
@@ -13,7 +15,7 @@ chrome.runtime.onMessage.addListener(function(message) {
 
   if (message == 'refresh_dataset') {
     console.log('Refreshing dataset');
-    loadDataset();
+    dataset.load();
   }
 });
 
@@ -25,21 +27,6 @@ chrome.browserAction.onClicked.addListener(function() {
   });
 });
 
-function loadDataset() {
-  dataset = []
-  chrome.storage.sync.get(function(shortcuts) {
-    var count = 0;
-    for (var key in shortcuts) {
-      count++;
-      dataset.push({
-        shortcut: key,
-        url: shortcuts[key]
-      });
-    }
-    console.log('Loaded a dataset of ', count, ' elements');
-  });
-}
-
 function xmlEscape(ss) {
   return ss.replace(/&/g, '&amp;')
            .replace(/</g, '&lt;')
@@ -48,30 +35,10 @@ function xmlEscape(ss) {
            .replace(/'/g, '&apos;');
 }
 
-function urlForShortcut(shortcut) {
-  for (var i = 0; i < dataset.length; i++)
-    if (dataset[i].shortcut == shortcut)
-      return dataset[i].url;
-}
-
-function getMatches(text) {
-  substrRegex = new RegExp(text, 'i');
-
-  var results = []
-
-  for (var i = 0; i < dataset.length; i++) {
-    if (substrRegex.test(dataset[i].shortcut)) {
-      results.push(dataset[i]);
-    }
-  }
-
-  return results;
-}
-
 function match(text) {
   substrRegex = new RegExp(text, 'i');
 
-  var matches = getMatches(text);
+  var matches = dataset.getMatches(text);
 
   var results = [];
   for (var i = 0; i < matches.length; i++) {
@@ -111,9 +78,9 @@ chrome.omnibox.onInputEntered.addListener(function (text, disposition) {
   console.log(text, ' ' , disposition);
   if (text.startsWith("go ")) {
     var shortcut = text.substr(3);
-    redirectTo(urlForShortcut(shortcut));
+    redirectTo(dataset.urlForShortcut(shortcut));
   } else {
-    var matches = getMatches(text);
+    var matches = dataset.getMatches(text);
     redirectTo(matches[0].url);
   }
 });
