@@ -42,33 +42,37 @@ Dataset.prototype.urlForShortcut = function(shortcut) {
       return this.links[i].url;
 };
 
-Dataset.prototype.addToDataset = function(shortcut, url) {
-  var new_entry = {
-    shortcut: shortcut,
-    url: url
-  };
-  
-  var found = false;
-  for (var i = 0; i < dataset.length; i++) {
-    if (dataset[i].shortcut == new_entry.shortcut) {
-      dataset[i] = new_entry;
-      found = true;
-    }
-  }
-  if (!found) {
-    dataset.push(new_entry);
-  }
+Dataset.prototype.addToDataset = function(shortcut, url, callback) {
+  var me = this;
+  var to_store = {}
+  to_store[shortcut] = url;
 
-  chrome.runtime.sendMessage('refresh_dataset');
+  chrome.storage.sync.set(to_store, function(args) {
+    console.log('Saved: ', shortcut, ' ', url);
+    
+    // Push in local representation.
+    var new_entry = {
+      shortcut: shortcut,
+      url: url
+    };
+    me.links.push(new_entry);
+
+    callback();
+    chrome.runtime.sendMessage('refresh_dataset');
+  });
 }
 
-Dataset.prototype.removeFromDataset = function(shortcut) {
-  for (var i = 0; i < dataset.length; i++) {
-    if (dataset[i].shortcut == shortcut) {
-      dataset.splice(i, 1);
-      console.log('Spliced');
+Dataset.prototype.removeFromDataset = function(shortcut, callback) {
+  chrome.storage.sync.remove(shortcut, function() {
+    callback();
+
+    for (var i = 0; i < dataset.length; i++) {
+      if (dataset[i].shortcut == shortcut) {
+        dataset.splice(i, 1);
+        console.log('Spliced');
+      }
     }
-  }
+  });
 
   chrome.runtime.sendMessage('refresh_dataset');
 }

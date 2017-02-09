@@ -1,3 +1,8 @@
+html {
+  font-family: sans-serif !important;
+  font-size:18px;
+}
+
 .overlay {
   position: fixed;
   top: 0%;

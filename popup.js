@@ -13,9 +13,10 @@ function showSavedShortcut(shortcut, url) {
   $(instance).find('.shortcut-url').text(trim_to_len(url, 150));
   $(instance).show();
   $(instance).find('button').click(function() {
-    chrome.storage.sync.remove(shortcut);
-    $(this).closest('tr').remove();
-    dataset.removeFromDataset(shortcut);
+    var me = this;
+    dataset.removeFromDataset(shortcut, function() {
+      $(me).closest('tr').remove();
+    });
   });
   $('#saved-shortcuts-body').prepend(instance);
 }
@@ -41,16 +42,8 @@ function openSettings() {
       var url = $('#link-url').val();
 
       if (shortcut && shortcut.length > 0) {
-        chrome.storage.sync.set({'petko': 'minkov'});
-        var to_store = {}
-        to_store[shortcut] = url;
-        chrome.storage.sync.set(to_store, function(args) {
-          console.log('Saved: ', shortcut, ' ', url);
-          console.log(arguments);
-          console.log(args);
-
+        dataset.addToDataset(shortcut, url, function() {
           showSavedShortcut(shortcut, url);
-          dataset.addToDataset(shortcut, url);
         });
       }
     });

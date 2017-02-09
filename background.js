@@ -2,6 +2,8 @@ console.log('background.js here');
 
 var dataset = new Dataset();
 
+dataset.load();
+
 chrome.runtime.onMessage.addListener(function(message) {
   if (message == 'hide_app') {
     chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
@@ -67,7 +69,7 @@ function match(text) {
 
 function redirectTo(url) {
   if (!url.startsWith('http')) {
-    url += 'http://';
+    url = 'http://' + url;
   }
   chrome.tabs.update({'url': url});
 }
@@ -79,7 +81,9 @@ chrome.omnibox.onInputEntered.addListener(function (text, disposition) {
     redirectTo(dataset.urlForShortcut(shortcut));
   } else {
     var matches = dataset.getMatches(text);
-    redirectTo(matches[0].url);
+    if (matches.length) {
+      redirectTo(matches[0].url);
+    }
   }
 });
 
