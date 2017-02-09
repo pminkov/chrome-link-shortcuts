@@ -3,6 +3,7 @@ var overlay = document.querySelector('.overlay');
 /* holds a list of {shortcut, url} objects */
 var dataset = [];
 
+var in_settings = false;
 var settings_first_open = true;
 
 function addToDataset(shortcut, url) {
@@ -21,8 +22,6 @@ function addToDataset(shortcut, url) {
   if (!found) {
     dataset.push(new_entry);
   }
-
-  chrome.runtime.sendMessage('refresh_dataset');
 }
 
 function removeFromDataset(shortcut) {
@@ -32,8 +31,6 @@ function removeFromDataset(shortcut) {
       console.log('Spliced');
     }
   }
-
-  chrome.runtime.sendMessage('refresh_dataset');
 }
 
 function showSavedShortcut(shortcut, url) {
@@ -51,8 +48,10 @@ function showSavedShortcut(shortcut, url) {
   $('#saved-shortcuts-body').prepend(instance);
 }
 
-function openSettings() {
+function openSettings(event) {
+  $('#search-box').hide();
   $('#settings-menu').show();
+  in_settings = true;
 
   if (settings_first_open) {
     settings_first_open = false;
@@ -100,6 +99,9 @@ function openSettings() {
 
 $(document).ready(function() {
   console.log('Document ready!');
+  $('.typeahead').focus();
+  $('.settings').click(openSettings);
+
   chrome.storage.sync.get(function(shortcuts) {
     if (false == $.isEmptyObject(shortcuts)) {
       for (var key in shortcuts) {
@@ -110,28 +112,52 @@ $(document).ready(function() {
       }
       console.log(dataset);
     }
-    openSettings();
   });
 });
 
 function closeSettingsUI() {
-  console.log('Closing settings UI');
-  // This goes to background.js and is then transmitted back
-  // to content.js. popup.js is a part of content.js so content.js
-  // isn't going to receive its messages.
-  chrome.runtime.sendMessage('hide_app');
+  in_settings = false;
+  $('#settings-menu').hide();
+  $('#search-box').show();
+  $('.typeahead').focus();
 }
 
 $(document).keyup(function(e) {
   if (e.which == 27) {
-    closeSettingsUI();
+    if (in_settings) {
+      closeSettingsUI();
+    } else {
+      chrome.runtime.sendMessage('hide_popup');
+    }
   }
 });
 
 overlay.addEventListener('click', function() {
-  closeSettingsUI();
+  console.log('Hiding!!!');
+  chrome.runtime.sendMessage('hide_popup');
 });
 
+var substringMatcher = function() {
+  return function findMatches(q, cb) {
+    var matches, substringRegex;
+
+    // an array that will be populated with substring matches
+    matches = [];
+
+    // regex used to determine if a string contains the substring `q`
+    substrRegex = new RegExp(q, 'i');
+
+    // iterate through the pool of strings and for any string that
+    // contains the substring `q`, add it to the `matches` array
+    $.each(dataset, function(i, entry) {
+      if (substrRegex.test(entry.shortcut)) {
+        matches.push(entry);
+      }
+    });
+
+    cb(matches);
+  };
+};
 
 function trim_to_len(url, len) {
   if (url.length > len) {
@@ -145,3 +171,35 @@ function trim(url) {
   return trim_to_len(url, 80);
 }
 
+function render_result(result) {
+  return '<div>'+ result.shortcut + '<div class="res_url">' + trim(result.url) + '</div></div>';
+};
+
+function display(result) {
+  return result.shortcut;
+}
+
+var box = $('#search-box .typeahead');
+box.typeahead({
+  hint: true,
+  highlight: true,
+  minLength: 1
+},
+{
+  name: 'shortcuts',
+  source: substringMatcher(),
+  display: display,
+  templates: {
+    suggestion: render_result
+  }
+});
+
+box.bind('typeahead:select', function(ev, shortcut) {
+  var redirect_url = shortcut.url;
+  console.log('Redirecting to ', redirect_url);
+  if (!redirect_url.startsWith('http')) {
+    redirect_url = 'http://' + redirect_url;
+  }
+
+  chrome.runtime.sendMessage({target: redirect_url});
+});

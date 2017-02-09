@@ -2,12 +2,11 @@
   "manifest_version": 2,
   "name": "Link Shortcuts",
   "description": "Access common urls by typing a shortcut name",
-  "version": "1.0.4",
-
-  "omnibox": {"keyword" : "go"},
+  "version": "1.0.3",
 
   "browser_action": {
-    "default_icon": "icon.png"
+    "default_icon": "icon.png",
+    "default_title": "Link Shortcuts. Press Ctrl+K."
   },
 
   "background" : {
@@ -19,7 +18,7 @@
     {
       "matches": [ "<all_urls>" ],
       "css": [ "content.css" ],
-      "js": ["content.js" ]
+      "js": ["content.js"]
     }
   ],
 
