@@ -10,7 +10,7 @@ You'll be taken to the main UI, which is fairly self explanatory.
 
 To use the extension:
 
-1. Type go and press space/tab.
+1. Type "go" and press space/tab.
 2. Type the name of the shortcut you'd like to be taken to.
 
 This is how the extension looks like when you use it:
