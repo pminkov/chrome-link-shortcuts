@@ -23,18 +23,21 @@ function showSavedShortcut(shortcut, url) {
 
 function openSettings() {
   $('#settings-menu').show();
+  var hash = window.location.hash;
+  if (hash == '') {
+    $('#link-url').focus();
+  } else {
+    $('#link-url').val(decodeURI(window.location.hash.substr(1)));
+    $('#link-name').focus();
+  }
 
   if (settings_first_open) {
     settings_first_open = false;
 
-    chrome.storage.sync.get(function(stored) {
-      console.log('Stored:', stored);
-      for (key in stored) {
-        console.log(key, ' -> ', stored[key]);
-
-        showSavedShortcut(key, stored[key]);
-      }
-    });
+    for (var i = 0; i < dataset.links.length; i++) {
+      var link = dataset.links[i];
+      showSavedShortcut(link.shortcut, link.url);
+    };
 
     $('#add-shortcut').click(function(ev) {
       ev.preventDefault();

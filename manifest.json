@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "Link Shortcuts",
   "description": "Access common urls by typing a shortcut name",
-  "version": "1.0.6",
+  "version": "1.0.7",
 
   "omnibox": {"keyword" : "go"},
 
