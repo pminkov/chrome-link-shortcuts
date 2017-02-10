@@ -25,12 +25,43 @@ html {
   -webkit-border-radius: 8px;
      -moz-border-radius: 8px;
           border-radius: 8px;
-  -webkit-box-shadow: 0 5px 10px rgba(0,0,0,.2);
-     -moz-box-shadow: 0 5px 10px rgba(0,0,0,.2);
-          box-shadow: 0 5px 10px rgba(0,0,0,.2);
   display:none;
   max-height:90%;
   /*overflow: scroll;*/
+}
+
+
+#img, #app-name {
+  float: left;
+}
+
+#top-header a {
+  padding-left: 0.3em;
+  padding-right:0.3em;
+}
+
+#app-name {
+  padding-left:0.5em;
+}
+
+a {
+  color: #408ca5;
+  text-decoration: none;
+}
+
+#top-header {
+  height:1em;
+  padding-left:1em;
+  padding:1em;
+  margin-bottom:1em;
+  background-color:#ccc;
+  -webkit-border-radius: 8px;
+     -moz-border-radius: 8px;
+          border-radius: 8px;
+}
+
+#top-header #links {
+  float: right;
 }
 
 .res_url {
@@ -63,7 +94,7 @@ html {
 }
 
 .red-button {
-  background: rgb(202, 60, 60);
+  background: #fc5858; 
 }
 
 #add-link-holder {
@@ -72,10 +103,4 @@ html {
 
 #add-link-holder input {
   width:70%;
-}
-
-#close-menu {
-  position: absolute;
-  top:9px;
-  right:9px;
 }
