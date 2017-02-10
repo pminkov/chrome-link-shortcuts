@@ -2,7 +2,11 @@
 
 To install - [Chrome Web Store link](https://chrome.google.com/webstore/detail/link-shortcuts/bceohjonbodagliebplenbfjlapegaei).
 
-To add new shorcuts, click on the browser icon (looks like this: ![icon](icons/icon16.png)). The UI is easy to use.
+To add new shorcuts, click on the browser icon (looks like this - ![icon](icons/icon16.png)):
+
+![browser icon](images/browser-action.png).
+
+You'll be taken to the main UI, which is fairly self explanatory.
 
 To use the extension:
 
