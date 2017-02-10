@@ -17,3 +17,12 @@ This is how the extension looks like when you use it:
 
 ![image](images/screenshot-extension.png)
 
+## FAQ
+
+#### Where are link shortcuts stored?
+
+The data is stored in [Chrome Sync](https://www.google.com/settings/chrome/sync). I don't have any access to it.
+
+#### Do you track what pages I'm visiting?
+
+No. This extension is open source, so you can verify this by reading the code as well.
