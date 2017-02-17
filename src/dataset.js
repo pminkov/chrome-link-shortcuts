@@ -66,9 +66,10 @@ Dataset.prototype.addToDataset = function(shortcut, url, callback) {
 }
 
 Dataset.prototype.removeFromDataset = function(shortcut) {
-  for (var i = 0; i < dataset.length; i++) {
-    if (dataset[i].shortcut == shortcut) {
-      dataset.splice(i, 1);
+  var me = this;
+  for (var i = 0; i < me.links.length; i++) {
+    if (me.links[i].shortcut == shortcut) {
+      me.links.splice(i, 1);
       console.log('Spliced');
     }
   }
