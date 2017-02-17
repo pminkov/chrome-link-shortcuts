@@ -1,25 +1,37 @@
 function Dataset() {
   this.links = [];
+  this.bookmark_utils = new BookmarkUtils();
+  this.loaded = false;
 }
 
 Dataset.prototype.load = function(callback) {
   var me = this;
-  me.links = [];
-  chrome.storage.sync.get(function(links) {
-    var count = 0;
-    for (var key in links) {
-      count++;
-      me.links.push({
-        shortcut: key,
-        url: links[key]
-      });
-    }
-    console.log('Loaded a dataset of ', count, ' elements');
 
-    if (callback) {
-      callback();
-    }
-  });
+  if (me.loaded) {
+    console.log('Links are already lodaded.');
+    callback(me.links);
+  } else {
+    me.bookmark_utils.getLinkShortcutsFolderId(function(folder_id, just_created) {
+      console.log('Shortcuts folder:', folder_id, just_created);
+      if (just_created) {
+        console.log('Copying from storage.sync');
+        // Copy from storage.
+        // TODO(petko): Remove in a week.
+        chrome.storage.sync.get(function(links) {
+          me.bookmark_utils.insertLinksIntoFolder(folder_id, links);
+        });
+      } 
+
+      me.bookmark_utils.getShortcuts(folder_id, function(links) {
+        console.log('Loaded', links.length, 'links');
+        me.links = links;
+        me.loaded = true;
+        if (callback) {
+          callback(links);
+        }
+      });
+    });
+  }
 }
 
 Dataset.prototype.getMatches = function(text) {
@@ -43,37 +55,24 @@ Dataset.prototype.urlForShortcut = function(shortcut) {
 };
 
 Dataset.prototype.addToDataset = function(shortcut, url, callback) {
-  var me = this;
-  var to_store = {}
-  to_store[shortcut] = url;
+  this.bookmark_utils.addBookmark(shortcut, url);
 
-  chrome.storage.sync.set(to_store, function(args) {
-    console.log('Saved: ', shortcut, ' ', url);
-    
-    // Push in local representation.
-    var new_entry = {
-      shortcut: shortcut,
-      url: url
-    };
-    me.links.push(new_entry);
-
-    callback();
-    chrome.runtime.sendMessage('refresh_dataset');
-  });
+  // Push in local representation.
+  var new_entry = {
+    shortcut: shortcut,
+    url: url
+  };
+  this.links.push(new_entry);
 }
 
-Dataset.prototype.removeFromDataset = function(shortcut, callback) {
-  chrome.storage.sync.remove(shortcut, function() {
-    callback();
-
-    for (var i = 0; i < dataset.length; i++) {
-      if (dataset[i].shortcut == shortcut) {
-        dataset.splice(i, 1);
-        console.log('Spliced');
-      }
+Dataset.prototype.removeFromDataset = function(shortcut) {
+  for (var i = 0; i < dataset.length; i++) {
+    if (dataset[i].shortcut == shortcut) {
+      dataset.splice(i, 1);
+      console.log('Spliced');
     }
-  });
+  }
 
-  chrome.runtime.sendMessage('refresh_dataset');
+  this.bookmark_utils.removeBookmark(shortcut);
 }
 

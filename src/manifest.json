@@ -16,7 +16,8 @@
   },
 
   "background" : {
-    "scripts": ["dataset.js", "background.js"],
+    "scripts": ["message_names.js", 
+      "bookmark_utils.js", "dataset.js", "background.js"],
     "persistent": false
   },
 
@@ -24,7 +25,7 @@
     {
       "matches": [ "<all_urls>" ],
       "css": [ "content.css" ],
-      "js": [ "content.js" ]
+      "js": [ "message_names.js", "content.js" ]
     }
   ],
 
@@ -42,7 +43,8 @@
 
   "permissions": [
     "tabs",
-    "storage"
+    "storage",
+    "bookmarks"
   ]
 }
 

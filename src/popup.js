@@ -1,8 +1,5 @@
 var overlay = document.querySelector('.overlay');
 
-/* holds a list of {shortcut, url} objects */
-var dataset = new Dataset();
-
 var settings_first_open = true;
 
 function showSavedShortcut(shortcut, url) {
@@ -14,14 +11,17 @@ function showSavedShortcut(shortcut, url) {
   $(instance).show();
   $(instance).find('button').click(function() {
     var me = this;
-    dataset.removeFromDataset(shortcut, function() {
-      $(me).closest('tr').remove();
+    $(me).closest('tr').remove();
+    // todo: implement.
+    chrome.runtime.sendMessage({
+      code: REMOVE_SHORTCUT,
+      shortcut: shortcut
     });
   });
   $('#saved-shortcuts-body').prepend(instance);
 }
 
-function openSettings() {
+function openSettings(links) {
   $('#settings-menu').show();
   var hash = window.location.hash;
   if (hash == '') {
@@ -34,8 +34,8 @@ function openSettings() {
   if (settings_first_open) {
     settings_first_open = false;
 
-    for (var i = 0; i < dataset.links.length; i++) {
-      var link = dataset.links[i];
+    for (var i = 0; i < links.length; i++) {
+      var link = links[i];
       showSavedShortcut(link.shortcut, link.url);
     };
 
@@ -45,9 +45,15 @@ function openSettings() {
       var url = $('#link-url').val();
 
       if (shortcut && shortcut.length > 0) {
-        dataset.addToDataset(shortcut, url, function() {
-          showSavedShortcut(shortcut, url);
+        if (!url.startsWith('http')) {
+          url = 'http://' + url;
+        }
+        chrome.runtime.sendMessage({
+          code: ADD_TO_DATASET,
+          shortcut: shortcut,
+          url: url
         });
+        showSavedShortcut(shortcut, url);
       }
     });
 
@@ -59,18 +65,16 @@ function openSettings() {
 }
 
 $(document).ready(function() {
-  console.log('Document ready!');
-  dataset.load(function() {
-    openSettings();
+  chrome.runtime.sendMessage(GET_DATASET, function(links) {
+    openSettings(links);
   });
 });
 
 function closeSettingsUI() {
-  console.log('Closing settings UI');
   // This goes to background.js and is then transmitted back
   // to content.js. popup.js is a part of content.js so content.js
   // isn't going to receive its messages.
-  chrome.runtime.sendMessage('hide_app');
+  chrome.runtime.sendMessage(HIDE_APP);
 }
 
 $(document).keyup(function(e) {

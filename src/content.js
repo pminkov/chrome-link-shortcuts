@@ -11,9 +11,7 @@ function createIFrame() {
 }
 
 chrome.runtime.onMessage.addListener(function(message) {
-  console.log('message=', message);
-
-  if (message == 'hide_app') {
+  if (message == HIDE_APP) {
     iframe.style.display = 'none';
   }
   if (message == 'show_app') {

@@ -1,11 +1,15 @@
 console.log('background.js here');
 
+// Returned when we're responding asynchronously.
+var RESPOND_ASYNC = true;
+
 var dataset = new Dataset();
 
 dataset.load();
+dataset.load();
 
-chrome.runtime.onMessage.addListener(function(message) {
-  if (message == 'hide_app') {
+chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
+  if (message == HIDE_APP) {
     chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
       if (tabs.length > 0) {
         chrome.tabs.sendMessage(tabs[0].id, message);
@@ -13,9 +17,22 @@ chrome.runtime.onMessage.addListener(function(message) {
     });
   }
 
-  if (message == 'refresh_dataset') {
-    console.log('Refreshing dataset');
-    dataset.load();
+  if (message == GET_DATASET) {
+    console.log('Got GET_DATASET');
+    dataset.load(function(links) {
+      sendResponse(links);
+    });
+    return RESPOND_ASYNC;
+  }
+
+  if (message.code) {
+    if (message.code == ADD_TO_DATASET) {
+      dataset.addToDataset(message.shortcut, message.url);
+    }
+
+    if (message.code == REMOVE_SHORTCUT) {
+      dataset.removeFromDataset(message.shortcut);
+    }
   }
 });
 
