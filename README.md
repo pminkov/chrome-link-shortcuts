@@ -21,7 +21,7 @@ This is how the extension looks like when you use it:
 
 #### Where are link shortcuts stored?
 
-The data is stored in [Chrome Sync](https://www.google.com/settings/chrome/sync). I don't have any access to it.
+The links are stored in your bookmarks. They're in a directory called "Link Shortcuts" inside the "Other Bookmarks" directory.
 
 #### Do you track what pages I'm visiting?
 
