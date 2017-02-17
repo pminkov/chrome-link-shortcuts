@@ -23,10 +23,14 @@ BookmarkUtils.prototype.findChild = function(id, title, callback) {
 
 BookmarkUtils.prototype.insertLinksIntoFolder = function(folder_id, links) {
   for (var key in links) {
+    var url = links[key];
+    if (!url.startsWith('http')) {
+      url = 'http://' + url;
+    }
     chrome.bookmarks.create({
       parentId: folder_id,
       title: key,
-      url: links[key]
+      url: url
     });
   }
 }
