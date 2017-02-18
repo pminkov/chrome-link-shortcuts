@@ -23,6 +23,6 @@ This is how the extension looks like when you use it:
 
 The links are stored in your bookmarks. They're in a directory called "Link Shortcuts" inside the "Other Bookmarks" directory.
 
-#### Do you track what pages I'm visiting?
+#### Is my privacy protected?
 
-No. This extension is open source, so you can verify this by reading the code as well.
+Yes, this extension doesn't send any of your data to the author, everything is stored in your browser and your Google account. This extension is open source, so you can verify this by reading the code as well.
