@@ -1,14 +1,18 @@
 # Google Chrome Extension - Link Shortcuts
 
-To install - [Chrome Web Store link](https://chrome.google.com/webstore/detail/link-shortcuts/bceohjonbodagliebplenbfjlapegaei).
+### Install
+[Chrome Web Store link](https://chrome.google.com/webstore/detail/link-shortcuts/bceohjonbodagliebplenbfjlapegaei).
 
+### Add new shortcuts
 To add new shorcuts, click on the browser icon (looks like this: ![icon](src/icons/Icons-03-16x16.png)):
 
 ![browser icon](images/browser-action.png).
 
-You'll be taken to the main UI, which is fairly self explanatory.
+You'll be taken to the main UI, where you can add and remove links:
 
-To use the extension:
+![main ui](images/main-ui.png)
+
+### Go to an url using a shortcut
 
 1. Type "go" and press space/tab.
 2. Type the name of the shortcut you'd like to be taken to.
